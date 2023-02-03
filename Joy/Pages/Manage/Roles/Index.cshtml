@@ -1,0 +1,120 @@
+﻿@page
+@model Joy.Pages.Manage.Roles.Index
+
+<h3>Roles</h3>
+
+<div class="search">
+    <i class="bi bi-search"></i>
+    <input type="text" class="form-control" placeholder="Search" id="search">
+</div>
+
+<div class="row">
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort By</label>
+            <select class="form-control" id="sortBy" asp-for="View.Roles.SortBy">
+                <option value="">choose</option>
+                <option value="name">Name</option>
+                <option value="description">Description</option>
+                <option value="abbreviation">Abbreviation</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort Order</label>
+            <select class="form-control" id="sortOrder" asp-for="View.Roles.SortOrder">
+                <option value="1">Ascending</option>
+                <option value="2">Descending</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-2">
+        <a href="~/manage/roles/create" class="btn btn-primary">Create New</a>
+    </div>
+</div>
+
+
+@{
+    if (Model.View != null && Model.View.Roles != null && Model.View.Roles.Items != null && Model.View.Roles.Items.Count > 0)
+    {
+        <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Abbreviation</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                @{
+                    foreach (var role in Model?.View?.Roles.Items)
+                    {
+                                        <tr>
+                                            <th scope="row">@role.Name</th>
+                                            <td>@role.Description</td>
+                                            <td>@role.Abbreviation</td>
+                                            <td>
+                                                <a href="~/manage/roles/update?id=@role.Id" class="btn btn-primary">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="~/manage/roles/delete?id=@role.Id" class="btn btn-danger">
+                                                    <i class="fa fa-times"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                    }            
+                }
+                        </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                @{
+                    if (Model?.View?.Roles.PageIndex > 1)
+                    {
+                                           <li class="page-item"><a class="page-link" href="/manage/roles?pageIndex=@(Model?.View?.Roles.PageIndex-1)&pageSize=@(Model?.View?.Roles.PageSize)&sortBy=@(Model?.View?.Roles.SortBy)&sortOrder=@(Model?.View?.Roles.SortOrder)">Previous</a></li>
+                    }
+
+                                       <li class="page-item"><span class="page-link">page @Model?.View?.Roles.PageIndex of @Model?.View?.Roles.PageCount (@Model?.View?.Roles.TotalRows total rows)</span></li>
+
+
+                    if (Model?.View?.Roles.PageIndex < Model?.View?.Roles.PageCount)
+                    {
+                                           <li class="page-item"><a class="page-link" href="/manage/roles?pageIndex=@(Model?.View?.Roles.PageIndex+1)&pageSize=@(Model?.View?.Roles.PageSize)&sortBy=@(Model?.View?.Roles.SortBy)&sortOrder=@(Model?.View?.Roles.SortOrder)">Next</a></li>
+                    }
+                }
+                        </ul>
+        </nav>
+    }
+    else
+    {
+        <div>There are no records to show.</div>
+    }
+}
+
+@section Scripts
+    {
+        <script>
+            $("#search").keyup(function (event) {
+                if (event.keyCode === 13) {
+                    window.location = "/manage/roles?keyword=" + $("#search").val();
+                }
+            });
+
+            $("#sortBy").change(function () {
+                window.location = "/manage/roles?keyword=@(Model.View.Roles.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val();
+            });
+
+            $("#sortOrder").change(function () {
+                window.location = "/manage/roles?keyword=@(Model.View.Roles.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val();
+            });
+        </script>
+}

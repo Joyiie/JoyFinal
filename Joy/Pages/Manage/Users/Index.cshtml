@@ -1,0 +1,139 @@
+﻿@page
+@model Joy.Pages.Manage.Users.Index
+
+<h3>Users</h3>
+
+<div class="search">
+    <i class="bi bi-search"></i>
+    <input type="text" class="form-control" placeholder="Search" id="search" value="@Model?.View?.Users?.Keyword">
+</div>
+
+<div class="row">
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort By</label>
+            <select class="form-control" id="sortBy" asp-for="View.Users.SortBy">
+                <option value="">choose</option>
+                <option value="name">Name</option>
+                <option value="description">Description</option>
+                <option value="abbreviation">Abbreviation</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort Order</label>
+            <select class="form-control" id="sortOrder" asp-for="View.Users.SortOrder">
+                <option value="1">Ascending</option>
+                <option value="2">Descending</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Role</label>
+            <select class="form-control select2" id="roleId">
+                @{
+                    if(Model.View.RoleId != null)
+                    {
+                        <option selected value="@Model.View.RoleId">@Model.View.RoleName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+
+
+@{
+    if (Model.View != null && Model.View.Users != null && Model.View.Users.Items != null && Model.View.Users.Items.Count > 0)
+    {
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email Address</th>
+                    <th scope="col">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var user in Model?.View?.Users.Items)
+                    {
+                        <tr>
+                            <th scope="row">@user.Name</th>
+                            <td>@user.EmailAddress</td>
+                            <td>@user.Role?.Name</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @{
+                    if (Model?.View?.Users.PageIndex > 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="/manage/users?pageIndex=@(Model?.View?.Users.PageIndex-1)&pageSize=@(Model?.View?.Users.PageSize)&sortBy=@(Model?.View?.Users.SortBy)&sortOrder=@(Model?.View?.Users.SortOrder)&roleId=@(Model?.View?.RoleId)">Previous</a></li>
+                    }
+
+                    <li class="page-item"><span class="page-link">page @Model?.View?.Users.PageIndex of @Model?.View?.Users.PageCount (@Model?.View?.Users.TotalRows total rows)</span></li>
+
+
+                    if (Model?.View?.Users.PageIndex < Model?.View?.Users.PageCount)
+                    {
+                        <li class="page-item"><a class="page-link" href="/manage/users?pageIndex=@(Model?.View?.Users.PageIndex+1)&pageSize=@(Model?.View?.Users.PageSize)&sortBy=@(Model?.View?.Users.SortBy)&sortOrder=@(Model?.View?.Users.SortOrder)&roleId=@(Model?.View?.RoleId)">Next</a></li>
+                    }
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div>There are no records to show.</div>
+    }
+}
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#roleId').select2({
+                ajax: {
+                    url: '?handler=RolesLookup',
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    data: function (params) {
+                        var query = {
+                            keyword: params.term,
+                            page: params.page || 1
+                        }
+
+                        return query;
+                    }
+                }
+            });
+        });
+
+
+        $("#search").keyup(function (event) {
+            if (event.keyCode === 13) {
+                window.location = "/manage/users?keyword=" + $("#search").val() + "&roleId=" + $("#roleId").val();
+            }
+        });
+
+        $("#sortBy").change(function () {
+            window.location = "/manage/users?keyword=@(Model.View.Users.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&roleId=" + $("#roleId").val();
+        });
+
+        $("#sortOrder").change(function () {
+            window.location = "/manage/users?keyword=@(Model.View.Users.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&roleId=" + $("#roleId").val();
+        });
+
+        $("#roleId").change(function () {
+            window.location = "/manage/users?keyword=@(Model.View.Users.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val() + "&roleId=" + $("#roleId").val();
+        });
+    </script>
+}
+

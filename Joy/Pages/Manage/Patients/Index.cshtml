@@ -1,0 +1,111 @@
+﻿@page
+@model Joy.Pages.Manage.Patients.Index
+<h3>Roles</h3>
+
+<div class="search">
+    <i class="bi bi-search"></i>
+    <input type="text" class="form-control" placeholder="Search" id="search">
+</div>
+
+<div class="row">
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort By</label>
+            <select class="form-control" id="sortBy" asp-for="View.Patients.SortBy">
+                <option value="">choose</option>
+                <option value="fullname">FullName</option>
+                <option value="code">Code</option>
+                
+            </select>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="">Sort Order</label>
+            <select class="form-control" id="sortOrder" asp-for="View.Patients.SortOrder">
+                <option value="1">Ascending</option>
+                <option value="2">Descending</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-2">
+        <a href="~/manage/patients/create" class="btn btn-primary">Create New</a>
+    </div>
+</div>
+
+
+@{
+    if (Model.View != null && Model.View.Patients != null && Model.View.Patients.Items != null && Model.View.Patients.Items.Count > 0)
+    {
+    <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Date Of Birth</th>
+                        <th>Type</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                @{
+                    foreach (var patient in Model?.View?.Patients.Items)
+                    {
+                        <tr>
+                            <th scope="row">@patient.FullName</th>
+                            <td>@patient.Code</td>
+                            <td>@patient.DateOfBirth</td>
+                            <td>@patient.Type</td>
+                           
+                        </tr>
+                    }            
+                }
+                </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @{
+                        if(Model?.View?.Patients.PageIndex > 1)
+                        {
+                        <li class="page-item"><a class="page-link" href="/manage/patients?pageIndex=@(Model?.View.Patients.PageIndex-1)&pageSize=@(Model?.View?.Patients.PageSize)&sortBy=@(Model?.View?.Patients.SortBy)&sortOrder=@(Model?.View?.Patients.SortOrder)">Previous</a></li>
+                        }
+
+                    <li class="page-item"><span class="page-link">page @Model?.View?.Patients.PageIndex of @Model?.View?.Patients.PageCount (@Model?.View?.Patients.TotalRows total rows)</span></li>
+
+
+                    if (Model?.View?.Patients.PageIndex < Model?.View?.Patients.PageCount)
+                        {
+                        <li class="page-item"><a class="page-link" href="/manage/patients?pageIndex=@(Model?.View?.Patients.PageIndex+1)&pageSize=@(Model?.View?.Patients.PageSize)&sortBy=@(Model?.View?.Patients.SortBy)&sortOrder=@(Model?.View?.Patients.SortOrder)">Next</a></li>
+                        }
+                    }
+                </ul>
+    </nav>
+    }
+    else
+    {
+        <div>There are no records to show.</div>
+    }
+}
+
+@section Scripts
+{
+    <script>
+        $("#search").keyup(function (event) {
+            if (event.keyCode === 13) {
+                window.location = "/manage/patients?keyword=" + $("#search").val();
+            }
+        });
+        
+        $("#sortBy").change(function () {
+            window.location = "/manage/patients?keyword=@(Model.View.Patients.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val();
+        });
+
+        $("#sortOrder").change(function () {
+            window.location = "/manage/patients?keyword=@(Model.View.Patients.Keyword)&sortBy=" + $("#sortBy").val() + "&sortOrder=" + $("#sortOrder").val();
+        });
+    </script>
+}

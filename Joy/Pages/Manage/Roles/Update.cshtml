@@ -1,0 +1,36 @@
+﻿@page
+@model Joy.Pages.Manage.Roles.Update
+@{
+}
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <form method="Post">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="View.Id" />
+                        <label asp-for="View.Name">Name</label>
+                        <input type="text" class="form-control" placeholder="Enter role name" asp-for="View.Name">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.Description">Description</label>
+                        <input type="text" class="form-control" placeholder="Enter description" asp-for="View.Description">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="View.Abbreviation">Abbreviation</label>
+                        <input type="text" class="form-control" placeholder="Enter abbreviation" asp-for="View.Abbreviation">
+                    </div>
+                    <div class="form-group alert-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <a href="~/manage/roles" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
